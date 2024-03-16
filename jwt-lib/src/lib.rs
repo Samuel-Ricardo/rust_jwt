@@ -19,3 +19,16 @@ pub fn get_jwt_secret(user: User) -> Result<String, String> {
 
     return token;
 }
+
+pub fn decode_jwt(token: &str) -> Result<User, String> {
+    let token_data = decode::<User>(
+        token,
+        &DecodingKey::from_secret("mykey".as_bytes()),
+        &Validation::default(),
+    );
+
+    match token_data {
+        Ok(token_data) => Ok(token_data.claims),
+        Err(e) => Err(e.to_string()),
+    }
+}
