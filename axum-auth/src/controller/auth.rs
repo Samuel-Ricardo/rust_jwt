@@ -6,7 +6,7 @@ use axum::{
 use jwt_lib::model::user::User;
 use serde_json::json;
 
-async fn get_token_handler(Json(user): Json<User>) -> Response<String> {
+pub async fn get_token_handler(Json(user): Json<User>) -> Response<String> {
     let token = jwt_lib::get_jwt_secret(user);
 
     match token {
