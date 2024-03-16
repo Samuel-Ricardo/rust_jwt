@@ -1,3 +1,5 @@
+mod auth;
+
 use axum::{
     http::{header, StatusCode},
     response::Response,
