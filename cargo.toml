@@ -1,5 +1,5 @@
 [workspace]
 
-members = ['axum-auth', 'actix-auth']
+members = ['axum-auth', 'actix-auth', "jwt-lib"]
 
 resolver = "2"
