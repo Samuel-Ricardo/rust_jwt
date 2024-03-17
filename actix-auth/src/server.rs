@@ -18,7 +18,7 @@ pub async fn setup() -> std::io::Result<()> {
             .route("/secret-view", get().to(secret_view_handler))
     })
     .workers(4)
-    .bind("127.0.0.1:2424")
+    .bind("127.0.0.1:8080")
     .expect("Address should be free and valid")
     .run()
     .await
