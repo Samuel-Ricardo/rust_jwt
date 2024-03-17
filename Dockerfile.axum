@@ -2,7 +2,7 @@ FROM rust:1.71-slim as build
 
 WORKDIR /app
 
-COPY ./jwt-lib/ ../jwt-lib/
+COPY ./jwt-lib/ ../
 COPY ./axum-auth/ .
 
 RUN cargo build --release
