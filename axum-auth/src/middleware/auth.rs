@@ -7,7 +7,7 @@ use axum::{
 use jwt_lib::model::user::User;
 use serde_json::json;
 
-pub struct Auth(User);
+pub struct Auth(pub User);
 
 #[async_trait]
 impl<S> FromRequestParts<S> for Auth
