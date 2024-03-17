@@ -1,3 +1,5 @@
+pub mod auth;
+
 use actix_web::HttpResponse;
 use serde_json::json;
 
