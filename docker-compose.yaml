@@ -4,6 +4,6 @@ services:
   axum_auth:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.axum
     ports:
       - "2323:2323"

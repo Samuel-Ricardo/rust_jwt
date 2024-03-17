@@ -15,7 +15,7 @@ pub async fn startup() {
         .route("/get-token", post(get_token_handler))
         .route("/secret-view", get(secret_view_handler));
 
-    let tcp_listener = TcpListener::bind("127.0.0.1:2323")
+    let tcp_listener = TcpListener::bind("localhost:2323")
         .await
         .expect("Address should be free and valid");
 
