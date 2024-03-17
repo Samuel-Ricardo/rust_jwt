@@ -6,7 +6,7 @@ use actix_web::{
 use jwt_lib::model::user::User;
 use serde_json::json;
 
-struct Auth(User);
+pub struct Auth(pub User);
 
 impl FromRequest for Auth {
     type Error = InternalError<String>;

@@ -1,5 +1,5 @@
 use actix_web::{
-    web::{get, post, route},
+    web::{get, post},
     App, HttpServer,
 };
 
