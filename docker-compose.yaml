@@ -7,3 +7,10 @@ services:
       dockerfile: Dockerfile.axum
     ports:
       - "2323:2323"
+
+  actix_auth:
+    build:
+      context: .
+      dockerfile: Dockerfile.actix
+    ports:
+      - "8080:8080"

@@ -1,0 +1,18 @@
+FROM  rust:1.71-slim as build
+
+WORKDIR /app
+
+COPY ./jwt-lib/ ../
+COPY ./actix-auth/ .
+
+RUN cargo build --release
+
+FROM rust:1.71-slim
+
+WORKDIR /usr/local/bin
+
+COPY --from=build /app/target/release/actix-auth .
+
+EXPOSE 8080
+
+CMD ["./actix-auth"]
