@@ -7,3 +7,12 @@ pub async fn hello_world() -> HttpResponse {
         "data": "Hello World!"
     }))
 }
+
+pub async fn public_view_handler() -> HttpResponse {
+    HttpResponse::Ok().json(json!({
+      "success": true,
+      "data": {
+        "message": "This data is visible to all users"
+      }
+    }))
+}
