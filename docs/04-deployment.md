@@ -79,7 +79,7 @@ This is the only workflow. Pipeline steps in order:
 
 | # | Step | Action | Runs on |
 |---|------|--------|---------|
-| 1 | Checkout repository | `actions/checkout@v3` (unpinned — finding M7) | always |
+| 1 | Checkout repository | `actions/checkout@11d5960a326750d5838078e36cf38b85af677262` # v4.4.0 (pinned SHA — M7 FIXED in `445f859`) | always |
 | 2 | Install cosign | `sigstore/cosign-installer` @ SHA (v3.1.1), `cosign-release: v2.1.1` | not on PR |
 | 3 | Set up Docker Buildx | `docker/setup-buildx-action` @ SHA (v3.0.0) | always |
 | 4 | Log into registry | `docker/login-action` @ SHA (v3.0.0), registry `ghcr.io`, user `${{ github.actor }}`, password `${{ secrets.GITHUB_TOKEN }}` | not on PR |
@@ -95,7 +95,7 @@ Triggers: push to `main`, tags `v*.*.*`, pull requests against `main`.
 - Pushes to **GHCR** on push/tag (never on PR); tags derived by `docker/metadata-action` (branch tag `main`, semver `v*.*.*` for releases).
 - Signs the image with **cosign** (sigstore) on push/tag.
 - **No test, check, clippy, or audit steps** — build and ship only.
-- Actions are SHA-pinned except `actions/checkout@v3` (M7); 5 of 6 third-party actions pinned to full commit SHAs.
+- All 6 third-party actions are SHA-pinned (`actions/checkout` pinned to v4.4.0 SHA since `445f859`).
 
 ## 4. Image Naming
 
