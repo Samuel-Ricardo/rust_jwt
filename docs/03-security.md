@@ -124,7 +124,7 @@ Only `**/target`. Missing `.git/`, `.github/`, `.env*`, `*.md`, `docs/` — buil
 
 ### 5.4 GitHub Actions (docker-publish-axum.yml)
 
-Good practices present (verified): 5 of 6 third-party actions pinned to full commit SHAs; no `pull_request_target`/`workflow_run`; the only `run:` step uses env-var indirection for cosign signing; `id-token: write` scoped for sigstore.
+Good practices present (verified): all 6 third-party actions pinned to full commit SHAs; no `pull_request_target`/`workflow_run`; the only `run:` step uses env-var indirection for cosign signing; `id-token: write` scoped for sigstore.
 
 Issues: ~~M7 (`actions/checkout@v3` unpinned, EOL)~~ — FIXED in `445f859` (pinned `actions/checkout@v4.4.0` by SHA); ~~`cosign-release: v2.1.1` stale~~ — FIXED (bumped to `v2.6.5`; v2.1.1 predates the sigstore TUF root rotation and fails with `invalid key`); no `cargo audit` or `--locked` build; no Dependabot; no `concurrency:`/`timeout-minutes`; H5 — no `JWT_SECRET` handling anywhere: the pipeline publishes the image containing the hardcoded key by design.
 

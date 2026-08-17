@@ -80,7 +80,7 @@ This is the only workflow. Pipeline steps in order:
 | # | Step | Action | Runs on |
 |---|------|--------|---------|
 | 1 | Checkout repository | `actions/checkout@11d5960a326750d5838078e36cf38b85af677262` # v4.4.0 (pinned SHA — M7 FIXED in `445f859`) | always |
-| 2 | Install cosign | `sigstore/cosign-installer` @ SHA (v3.1.1), `cosign-release: v2.6.5` | not on PR |
+| 2 | Install cosign | `sigstore/cosign-installer` @ SHA (v4.1.2, bootstrap v3.0.6), `cosign-release: v2.6.5` | not on PR |
 | 3 | Set up Docker Buildx | `docker/setup-buildx-action` @ SHA (v3.0.0) | always |
 | 4 | Log into registry | `docker/login-action` @ SHA (v3.0.0), registry `ghcr.io`, user `${{ github.actor }}`, password `${{ secrets.GITHUB_TOKEN }}` | not on PR |
 | 5 | Extract Docker metadata | `docker/metadata-action` @ SHA (v5.0.0), images `ghcr.io/${{ github.repository }}` | always |
