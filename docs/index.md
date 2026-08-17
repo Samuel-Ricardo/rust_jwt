@@ -37,6 +37,6 @@ To run either app locally with cargo, or to exercise the JWT flow with curl, see
 ## Repository Facts
 
 - Git: branch `main`, 41 commits, author Samuel_Ricardo, MIT License (2024)
-- Toolchain verified: cargo/rustc 1.76.0; Docker images pinned to `rust:1.71-slim`
+- Toolchain verified: cargo/rustc 1.76.0; Docker images pinned to `rust:1.88-slim` (build verified 2026-08-17)
 - Build status: `cargo check`/`build` pass; 0 tests; 5 warnings (see 05-development.md)
 - Security status: 19 findings — 2 Critical, 5 High, 8 Medium, 4 Low (see 03-security.md)

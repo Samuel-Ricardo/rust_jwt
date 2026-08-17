@@ -8,7 +8,7 @@ This document covers prerequisites, build commands, the current status of the wo
 |-------------|------------------|
 | Rust edition | 2021 (all three crates) |
 | Toolchain (verified) | cargo 1.76.0, rustc 1.76.0 |
-| Docker image toolchain | `rust:1.71-slim` (older than the local toolchain; MSRV of the dependency tree against rustc 1.71 is unverified) |
+| Docker image toolchain | `rust:1.88-slim` (image build verified with `docker build` on 2026-08-17) |
 | OS note | The workspace manifest is named `cargo.toml` (lowercase) — works on Windows/macOS (case-insensitive filesystems), **breaks on Linux/CI** (see §4) |
 
 ## 2. Commands
@@ -60,7 +60,7 @@ Permanent fix: `git mv cargo.toml Cargo.toml` and commit.
 | HIGH | Root manifest named `cargo.toml` (lowercase) — breaks root-level cargo on Linux/macOS/CI | Open — needs `git mv` + commit |
 | HIGH | Zero tests in all 3 crates | Open — `cargo test` passes vacuously |
 | MEDIUM | 5 lint/deprecation warnings (2 rustc, 3 clippy) | Open — 2 auto-fixable |
-| LOW | Docker base `rust:1.71-slim` vs local 1.76 — Docker build not executed in verification | Open — verify with `docker build` |
+| LOW | Docker base image vs local toolchain — Docker build not executed in the original verification | CLOSED — verified with `docker build` (`rust:1.88-slim`) on 2026-08-17 |
 
 ## 4. Contributing Conventions
 
@@ -97,7 +97,7 @@ Examples from history: `[ :sparkles: ] | create: fun - get_jwt (lib::jwt)`, `[ :
 1. `git mv cargo.toml Cargo.toml` and commit — restores Linux/CI compatibility.
 2. Commit `Cargo.lock` — reproducible builds (and enables `cargo build --locked` in CI).
 3. Add `[workspace.dependencies]` in the root manifest — deduplicate versions across crates.
-4. Fix the `Dockerfile.axum` COPY regression (`COPY ./jwt-lib/ ../` → workspace-aware layout).
+4. ~~Fix the `Dockerfile.axum` COPY regression~~ — done in `599107f` (`COPY ./jwt-lib/ /jwt-lib/`). Remaining: workspace-aware layout (`COPY . .` + root `Cargo.toml`).
 5. Apply `cargo clippy --fix --workspace` for the auto-fixable findings; manually fix the `chrono::TimeDelta::minutes` deprecation (`try_minutes`) and the unhandled `Result` in `actix-auth/src/main.rs`.
 
 ### 5.2 Test coverage (highest quality gap)

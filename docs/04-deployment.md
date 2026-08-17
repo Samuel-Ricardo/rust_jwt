@@ -7,16 +7,16 @@ This document covers the container and CI/CD story of the workspace: `Dockerfile
 The current file (verbatim behavior):
 
 ```dockerfile
-FROM rust:1.71-slim as build
+FROM rust:1.88-slim AS build
 
 WORKDIR /app
 
-COPY ./jwt-lib/ ../
+COPY ./jwt-lib/ /jwt-lib/
 COPY ./axum-auth/ .
 
 RUN cargo build --release
 
-FROM rust:1.71-slim
+FROM rust:1.88-slim
 
 WORKDIR /usr/local/bin
 
@@ -31,7 +31,7 @@ Structure:
 
 | Aspect | Detail |
 |--------|--------|
-| Stages | Two: builder (`rust:1.71-slim`) and runtime (`rust:1.71-slim`) |
+| Stages | Two: builder (`rust:1.88-slim`) and runtime (`rust:1.88-slim`) |
 | Build | `cargo build --release` for the single `axum-auth` package |
 | Artifact | `target/release/axum-auth` staged to `/usr/local/bin/axum-auth` |
 | Port | `EXPOSE 2323` |
@@ -39,13 +39,13 @@ Structure:
 
 ### 1.1 Known defects
 
-1. **`COPY ./jwt-lib/ ../` regression** — jwt-lib's *contents* are copied into `/` (the parent of `WORKDIR /app`), so `/jwt-lib` never exists and the path dependency `jwt-lib = { path = "../jwt-lib" }` can only resolve by accident. The pre-regression form was `COPY ./jwt-lib/ ../jwt-lib/`. A clean fix is a workspace-aware build: `COPY . .` with a proper `.dockerignore` and a root `Cargo.toml`.
-2. **Runtime is root with a full Rust toolchain** — `rust:1.71-slim` (EOL toolchain, May 2023) ships cargo/rustc/git; no `USER` directive (security finding H3). The runtime stage should be a minimal image (debian slim/distroless/static musl + scratch) with a non-root user.
-3. **Base image not digest-pinned** — `rust:1.71-slim` is a moving tag; CI and local builds can diverge.
+1. **`COPY ./jwt-lib/ ../` regression — FIXED** (commit `599107f`): now `COPY ./jwt-lib/ /jwt-lib/`, so jwt-lib's contents land in `/jwt-lib/` where the `../jwt-lib` path dependency resolves. Verified with `docker build` on 2026-08-17. A workspace-aware build (`COPY . .` + root `Cargo.toml`) remains the cleaner long-term option.
+2. **Runtime runs as root with the full Rust toolchain** — toolchain updated to `rust:1.88-slim` (commit `599107f`) but the image still ships cargo/rustc/git and still has no `USER` directive (security finding H3). The runtime stage should be a minimal image (debian slim/distroless/static musl + scratch) with a non-root user.
+3. **Base image not digest-pinned** — `rust:1.88-slim` is a moving tag; CI and local builds can diverge.
 4. **No `HEALTHCHECK`**, no `--locked` build (impossible while `Cargo.lock` is gitignored).
 5. **The root workspace manifest is never copied into the image** — container builds are single-package builds. This incidentally masks the lowercase `cargo.toml` filename problem, which would break a workspace build on Linux.
 
-There is no `Dockerfile.actix` in the working tree (deleted; still present in git HEAD). The actix containerization was removed in the consolidation commit `1dd6df8`.
+There is no `Dockerfile.actix` in the working tree or in git history since commit `704822a` (deletion committed 2026-08-17). The actix containerization was removed in the consolidation commit `1dd6df8`.
 
 ## 2. docker-compose.yaml
 
@@ -129,7 +129,7 @@ docker run --rm -p 2323:2323 rust_jwt-axum:local
 
 ### 5.3 Pull the published GHCR image
 
-After a CI run on `main` (requires the workflow to build successfully — see blockers):
+After a CI run on `main` (the build pipeline was verified locally with `docker build` on 2026-08-17):
 
 ```bash
 docker pull ghcr.io/Samuel-Ricardo/rust_jwt:main
@@ -138,7 +138,7 @@ docker pull ghcr.io/Samuel-Ricardo/rust_jwt:main
 ### 5.4 Production checklist (all currently unmet)
 
 1. Fix C1/C2 (secret from env; authenticated minting) — see 03-security.md.
-2. Fix the Dockerfile COPY regression and add a root `Cargo.toml`.
+2. ~~Fix the Dockerfile COPY regression~~ — done (`599107f`); add a root `Cargo.toml` for a workspace-aware build.
 3. Run the runtime as a non-root user on a minimal image; pin base images by digest.
 4. Pass `JWT_SECRET` via compose `environment:` (`.env` gitignored) or secrets manager.
 5. Add TLS termination, restrict port binding, and Docker hardening flags.
