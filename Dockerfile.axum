@@ -1,13 +1,13 @@
-FROM rust:1.71-slim as build
+FROM rust:1.88-slim AS build
 
 WORKDIR /app
 
-COPY ./jwt-lib/ ../
+COPY ./jwt-lib/ /jwt-lib/
 COPY ./axum-auth/ .
 
 RUN cargo build --release
 
-FROM rust:1.71-slim
+FROM rust:1.88-slim
 
 WORKDIR /usr/local/bin
 
